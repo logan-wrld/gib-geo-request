@@ -17,16 +17,20 @@ from PIL import Image as plimg
 import numpy as np
 from owslib.wms import WebMapService
 from IPython.display import Image, display
+import datetime  # Import datetime module
 
 # Connect to GIBS WMS Service
 wms = WebMapService('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?', version='1.1.1')
+
+# Get yesterday's date in the format YYYY-MM-DD
+yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
 # Configure request for MODIS_Terra_CorrectedReflectance_TrueColor
 img = wms.getmap(layers=['MODIS_Terra_CorrectedReflectance_TrueColor'],  # Layers
                  srs='epsg:4326',  # Map projection
                  bbox=(-180,-90,180,90),  # Bounds
                  size=(2800, 1200),  # Image size
-                 time='2023-12-14',  # Time of data
+                 time=yesterday,  # Time of data, now using yesterday's date
                  format='image/png',  # Image format
                  transparent=True)  # Nodata transparency
 

@@ -16,4 +16,4 @@ def convert_png_to_bmp(source_path, target_path):
 
 # Replace 'path/to/source.png' with the path to your PNG file
 # Replace 'path/to/target.bmp' with the path where you want to save the BMP file
-convert_png_to_bmp('images/MODIS_Terra_TrueColor_Texas.png', 'converted/converted.bmp')
+convert_png_to_bmp('images/MODIS_Terra_TrueColor_Texas2.png', 'converted/converted.bmp')
