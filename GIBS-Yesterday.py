@@ -2,6 +2,7 @@ import os
 import datetime
 from owslib.wms import WebMapService
 from skimage import io
+import shutil
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 from PIL import Image
@@ -25,35 +26,19 @@ img_response = wms.getmap(layers=['MODIS_Terra_CorrectedReflectance_TrueColor'],
                           format='image/png', 
                           transparent=True)
 
-# Read the image data directly from the response
-img_data = io.imread(BytesIO(img_response.read()))
-
-# Check if image data is loaded correctly
-if img_data.ndim < 2:
-    print("Loaded image data is not in expected format.")
-    exit()
-
-# Save the image
+# Save the raw PNG image
 output_dir = 'images'
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
-output_file = os.path.join(output_dir, 'MODIS_Terra_TrueColor_Texas_geo.png')
-with open(output_file, 'wb') as out_file:
-    out_file.write(img_data)
+png_output_file = os.path.join(output_dir, 'MODIS_Terra_TrueColor_Texas.png')
+with open(png_output_file, 'wb') as out_file:
+    out_file.write(img_response.read())
 
-# Display the image
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
-ax.set_extent([-106.65, -93.51, 25.84, 36.5], crs=ccrs.PlateCarree())
-plt.imshow(img_data, transform=ccrs.PlateCarree(), extent=[-106.65, -93.51, 25.84, 36.5], origin='upper')
-plt.show()
-# ... [rest of your script] ...
+# Read the image data for display and BMP conversion
+img_data = io.imread(png_output_file)
 
-# Display the image
-# ... [Matplotlib code for displaying the image] ...
 
-# Convert the NumPy array to a Pillow Image
-# Ensure img_data is in RGB format
+# Convert the NumPy array to a Pillow Image for BMP saving
 if img_data.ndim == 2:  # if the image is grayscale
     pil_img = Image.fromarray(img_data, mode='L')
 elif img_data.shape[2] == 4:  # if the image has an alpha channel
@@ -66,3 +51,24 @@ bmp_output_file = os.path.join(output_dir, 'MODIS_Terra_TrueColor_Texas.bmp')
 pil_img.save(bmp_output_file, format='BMP')
 
 print(f"Image saved as {bmp_output_file}")
+
+def move_bmp_to_esp32(source_folder, target_folder, file_name):
+    source_path = os.path.join(source_folder, file_name)
+    target_path = os.path.join(target_folder, file_name)
+
+    try:
+        # Move the file
+        shutil.move(source_path, target_path)
+        print(f"File '{file_name}' moved from '{source_folder}' to '{target_folder}'.")
+    except FileNotFoundError:
+        print(f"File '{file_name}' not found in '{source_folder}'.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Define the source and target folders and the filename
+source_folder = 'images'  # Replace with the path to your converted folder
+target_folder = '/Volumes/CIRCUITPY/images'  # Replace with the mounted path of your ESP32
+file_name = 'MODIS_Terra_TrueColor_Texas.bmp'  # Replace with your BMP file name
+
+# Move the file
+move_bmp_to_esp32(source_folder, target_folder, file_name)
