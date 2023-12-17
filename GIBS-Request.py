@@ -29,7 +29,7 @@ img = wms.getmap(layers=['MODIS_Terra_CorrectedReflectance_TrueColor'],  # Layer
                  srs='epsg:4326',  # Map projection
                  bbox=texas_bbox,  # Bounds for Texas
                  size=(250, 250),  # Image size
-                 time='2023-12-15',  # Time of data
+                 time='2023-12-16',  # Time of data
                  format='image/png',  # Image format
                  transparent=True)  # Nodata transparency
 

@@ -17,9 +17,12 @@ from PIL import Image as plimg
 import numpy as np
 from owslib.wms import WebMapService
 from IPython.display import Image, display
-
+import datetime  # Import datetime module
 
 wms = WebMapService('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?', version='1.1.1')
+
+# Get yesterday's date in the format YYYY-MM-DD
+yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
 # Configure request for MODIS_Terra_CorrectedReflectance_TrueColor
 # Adjusting bbox to the coordinates of Texas, USA
@@ -29,7 +32,7 @@ img = wms.getmap(layers=['MODIS_Terra_CorrectedReflectance_TrueColor'],  # Layer
                  srs='epsg:4326',  # Map projection
                  bbox=texas_bbox,  # Bounds for Texas
                  size=(250, 250),  # Image size
-                 time='2023-12-15',  # Time of data
+                 time=yesterday,  # Time of data, now using yesterday's date
                  format='image/png',  # Image format
                  transparent=True)  # Nodata transparency
 
@@ -39,7 +42,7 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 # Save output PNG to a file
-output_file = os.path.join(output_dir, 'MODIS_Terra_TrueColor_Texas_Yesterday.png')
+output_file = os.path.join(output_dir, 'MODIS_Terra_TrueColor_Texas.png')
 with open(output_file, 'wb') as out:
     out.write(img.read())
 
