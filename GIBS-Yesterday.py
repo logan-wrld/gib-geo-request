@@ -12,7 +12,7 @@ from io import BytesIO  # Import BytesIO
 wms = WebMapService('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?', version='1.1.1')
 
 # Get the date from two days ago
-two_days_ago = (datetime.date.today() - datetime.timedelta(days=2)).strftime("%Y-%m-%d")
+two_days_ago = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
 # Configure request for MODIS Terra Corrected Reflectance, adjusting to the coordinates of Texas, USA
 texas_bbox = (-106.65, 25.84, -93.51, 36.5)  # Bounding box for Texas
