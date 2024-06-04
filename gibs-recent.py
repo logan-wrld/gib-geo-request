@@ -72,3 +72,5 @@ file_name = 'MODIS_Terra_TrueColor_Texas.bmp'  # Replace with your BMP file name
 
 # Move the file
 move_bmp_to_esp32(source_folder, target_folder, file_name)
+
+# what the fuck is going wrong with this shit? 
